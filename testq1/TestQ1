@@ -1,0 +1,78 @@
+user@MSI MINGW64 ~
+$ cd fahimtest
+
+user@MSI MINGW64 ~/fahimtest
+$ ls
+linux_tweet_app/  test/  testq1/
+
+user@MSI MINGW64 ~/fahimtest
+$ cd testq1                                                                                                                                                                                                                                  
+user@MSI MINGW64 ~/fahimtest/testq1
+$ ls
+api/  docker-compose.yml  README.md  'TestQ1 Screenshot.JPG'  TestQ2  'TestQ2 Screenshot.JPG'  www/
+
+user@MSI MINGW64 ~/fahimtest/testq1
+$ docker container ls
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+user@MSI MINGW64 ~/fahimtest/testq1
+$ docker-compose up -d --build
+Building api
+Step 1/9 : FROM       python:3
+ ---> f88b2f81f83a
+Step 2/9 : LABEL      maintainer="Fahim Jailani <fahim.jailani@gmail.com>"
+ ---> Using cache
+ ---> 144fc0ba82c7
+Step 3/9 : ENV        REDIS_URL="redis://localhost:6379"
+ ---> Using cache
+ ---> d0f792c6575a
+Step 4/9 : WORKDIR    /app
+ ---> Using cache
+ ---> 30506bbfc080
+Step 5/9 : COPY       requirements.txt /app/
+ ---> Using cache
+ ---> 1407fc2bc4a2
+Step 6/9 : RUN        pip install -r requirements.txt
+ ---> Using cache
+ ---> e097c5bc7c46
+Step 7/9 : COPY       *.py /app/
+ ---> Using cache
+ ---> 678714db845e
+Step 8/9 : RUN        chmod a+x *.py
+ ---> Using cache
+ ---> 55d8cb5f29be
+Step 9/9 : CMD        ["./main.py"]
+ ---> Using cache
+ ---> c9db4cc12f40
+Successfully built c9db4cc12f40
+Successfully tagged wikicrawler-api-python:latest
+Building web
+Step 1/4 : FROM       php:7-apache
+ ---> d753d5b380a1
+Step 2/4 : LABEL      maintainer="Sawood Alam <@ibnesayeed>"
+ ---> Using cache
+ ---> 4f8488702f96
+Step 3/4 : ENV        API_ENDPOINT="http://localhost:5000/api/"
+ ---> Using cache
+ ---> d78f7336e419
+Step 4/4 : COPY       . /var/www/html/
+ ---> Using cache
+ ---> 6b8a67c59c9f
+Successfully built 6b8a67c59c9f
+Successfully tagged wikicrawler-web-php:latest
+Starting testq1_redis_1 ... done                                                                                                                                                                                                             Starting testq1_api_1   ... done                                                                                                                                                                                                             Starting testq1_web_1   ... done                                                                                                                                                                                                             
+user@MSI MINGW64 ~/fahimtest/testq1
+$ docker container run -it wikicrawler-api-python
+ * Serving Flask app "main" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+^C
+user@MSI MINGW64 ~/fahimtest/testq1
+$ docker container ls
+CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS                    NAMES
+38f3e0679723        redis                    "docker-entrypoint.s…"   7 days ago          Up 2 minutes        6379/tcp                 testq1_redis_1
+565136c4e6c4        wikicrawler-web-php      "docker-php-entrypoi…"   7 days ago          Up 2 minutes        0.0.0.0:80->80/tcp       testq1_web_1
+606b62b354b5        wikicrawler-api-python   "./main.py"              7 days ago          Up 2 minutes        0.0.0.0:5000->5000/tcp   testq1_api_1
